@@ -15,7 +15,29 @@ jobs:
 
     - uses: azure/docker-login@v1
       with:
-        login-server: contoso.azurecr.io
+        login-server: contoso.azurecr.{
+    ...
+    "parameters": {
+        "site_name": {
+            "defaultValue": "{SITE NAME}",
+            "type": "String"
+        },
+        ...
+    },       
+    ...
+    "resources": [
+        ...
+        {
+            "type": "Microsoft.Web/sites/siteextensions",
+            "apiVersion": "2018-11-01",
+            "name": "[concat(parameters('site_name'), '/AspNetCoreRuntime.5.0.x64')]",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('site_name'))]"
+            ]
+        }
+    ]
+}
         username: ${{ secrets.REGISTRY_USERNAME }}
         password: ${{ secrets.REGISTRY_PASSWORD }}
 
